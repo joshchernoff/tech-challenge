@@ -1,0 +1,32 @@
+version: "3"
+services:
+  prod:
+    container_name: "ghost_group_prod"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "ecto://postgres:postgres@db/ghost_group_dev"
+      SECRET_KEY_BASE: DCgs1h58PVTj2uyIW867pNV1Y5VZfxS26quAUCm02nkH9K204GyQyo4EvT3qH9c4
+      MIX_ENV: prod
+      PHX_SERVER: "true"
+      RELEASE_NAME: prod
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+  db:
+    container_name: "ghost_group_prod_data"
+    image: "postgres:14.2"
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.max=10000 -c pg_stat_statements.track=all
+    environment:
+      POSTGRES_DB: "ghost_group_dev"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+volumes:
+  data:
+    driver: local
