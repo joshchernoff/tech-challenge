@@ -36,8 +36,8 @@ defmodule GhostGroup.MedicalRecommendations do
 
   """
   def get_medical_recommendation!(id, current_user_id) do
-      from(mr in MedicalRecommendation, where: mr.user_id == ^current_user_id and mr.id == ^id)
-      |> Repo.one!()
+    from(mr in MedicalRecommendation, where: mr.user_id == ^current_user_id and mr.id == ^id)
+    |> Repo.one!()
   end
 
   @doc """

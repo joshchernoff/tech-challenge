@@ -14,7 +14,6 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.Show do
         _,
         %{assigns: %{current_user: %{id: current_user_id}}} = socket
       ) do
-
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))

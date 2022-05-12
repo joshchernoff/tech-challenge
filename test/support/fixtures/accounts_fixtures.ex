@@ -6,7 +6,7 @@ defmodule GhostGroup.AccountsFixtures do
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
-  def valide_dob, do: Date.utc_today |> Date.add(-7670)
+  def valide_dob, do: Date.utc_today() |> Date.add(-7670)
 
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{

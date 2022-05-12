@@ -60,7 +60,8 @@ defmodule GhostGroup.AccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid", dob: Date.utc_today()})
+      {:error, changeset} =
+        Accounts.register_user(%{email: "not valid", password: "not valid", dob: Date.utc_today()})
 
       assert %{
                email: ["must have the @ sign and no spaces"],

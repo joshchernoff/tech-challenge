@@ -52,7 +52,7 @@ defmodule GhostGroup.Accounts.User do
   defp validate_dob(changeset) do
     changeset
     |> validate_required([:dob])
-    |> validate_change(:dob, &older_than_21 /2)
+    |> validate_change(:dob, &older_than_21/2)
   end
 
   defp older_than_21(:dob, %Date{} = birth_date) do

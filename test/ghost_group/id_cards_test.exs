@@ -21,7 +21,12 @@ defmodule GhostGroup.IdCardsTest do
     end
 
     test "create_id_card/1 with valid data creates a id_card" do
-      valid_attrs = %{expiration: ~D[2022-05-11], image: "some image", number: "some number", state: "some state"}
+      valid_attrs = %{
+        expiration: ~D[2022-05-11],
+        image: "some image",
+        number: "some number",
+        state: "some state"
+      }
 
       assert {:ok, %IdCard{} = id_card} = IdCards.create_id_card(valid_attrs)
       assert id_card.expiration == ~D[2022-05-11]
@@ -36,7 +41,13 @@ defmodule GhostGroup.IdCardsTest do
 
     test "update_id_card/2 with valid data updates the id_card" do
       id_card = id_card_fixture()
-      update_attrs = %{expiration: ~D[2022-05-12], image: "some updated image", number: "some updated number", state: "some updated state"}
+
+      update_attrs = %{
+        expiration: ~D[2022-05-12],
+        image: "some updated image",
+        number: "some updated number",
+        state: "some updated state"
+      }
 
       assert {:ok, %IdCard{} = id_card} = IdCards.update_id_card(id_card, update_attrs)
       assert id_card.expiration == ~D[2022-05-12]
