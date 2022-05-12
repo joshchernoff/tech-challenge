@@ -11,6 +11,10 @@
   <%= email_input f, :email, required: true %>
   <%= error_tag f, :email %>
 
+  <%= label f, :dob, "Date of birth (21+ years of age required)" %>
+  <%= date_input f, :dob, required: true %>
+  <%= error_tag f, :dob %>
+
   <%= label f, :password %>
   <%= password_input f, :password, required: true %>
   <%= error_tag f, :password %>

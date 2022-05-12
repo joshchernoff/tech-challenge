@@ -8,7 +8,7 @@ defmodule GhostGroup.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
-
+    field :dob, :date, redact: true
     timestamps()
   end
 
@@ -31,8 +31,9 @@ defmodule GhostGroup.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :dob])
     |> validate_email()
+    |> validate_dob()
     |> validate_password(opts)
   end
 
@@ -43,6 +44,22 @@ defmodule GhostGroup.Accounts.User do
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, GhostGroup.Repo)
     |> unique_constraint(:email)
+  end
+
+  defp validate_dob(changeset) do
+    changeset
+    |> validate_required([:dob])
+    |> validate_change(:dob, &older_than_21 /2)
+  end
+
+  defp older_than_21(:dob, %Date{} = birth_date) do
+    {year, month, date} = Date.to_erl(Date.utc_today())
+    min_date = Date.from_erl!({year - 21, month, date})
+
+    case Date.compare(min_date, birth_date) do
+      :lt -> [dob: "Must be 21 years or older"]
+      _ -> []
+    end
   end
 
   defp validate_password(changeset, opts) do
