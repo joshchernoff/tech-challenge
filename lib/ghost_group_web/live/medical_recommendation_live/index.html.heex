@@ -1,0 +1,47 @@
+<h1>Listing Medical recommendations</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.medical_recommendation_index_path(@socket, :index)}>
+    <.live_component
+      module={GhostGroupWeb.MedicalRecommendationLive.FormComponent}
+      id={@medical_recommendation.id || :new}
+      title={@page_title}
+      action={@live_action}
+      medical_recommendation={@medical_recommendation}
+      return_to={Routes.medical_recommendation_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>Issuer</th>
+      <th>State</th>
+      <th>Expiration</th>
+      <th>Image</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="medical_recommendations">
+    <%= for medical_recommendation <- @medical_recommendations do %>
+      <tr id={"medical_recommendation-#{medical_recommendation.id}"}>
+        <td><%= medical_recommendation.number %></td>
+        <td><%= medical_recommendation.issuer %></td>
+        <td><%= medical_recommendation.state %></td>
+        <td><%= medical_recommendation.expiration %></td>
+        <td><%= medical_recommendation.image %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.medical_recommendation_show_path(@socket, :show, medical_recommendation) %></span>
+          <span><%= live_patch "Edit", to: Routes.medical_recommendation_index_path(@socket, :edit, medical_recommendation) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: medical_recommendation.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Medical recommendation", to: Routes.medical_recommendation_index_path(@socket, :new) %></span>

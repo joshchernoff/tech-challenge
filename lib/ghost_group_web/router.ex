@@ -78,6 +78,13 @@ defmodule GhostGroupWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+
+    live "/medical_recommendations", MedicalRecommendationLive.Index, :index
+    live "/medical_recommendations/new", MedicalRecommendationLive.Index, :new
+    live "/medical_recommendations/:id/edit", MedicalRecommendationLive.Index, :edit
+    live "/medical_recommendations/:id", MedicalRecommendationLive.Show, :show
+    live "/medical_recommendations/:id/show/edit", MedicalRecommendationLive.Show, :edit
   end
 
   scope "/", GhostGroupWeb do

@@ -1,0 +1,46 @@
+<h1>Show Medical recommendation</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.medical_recommendation_show_path(@socket, :show, @medical_recommendation)}>
+    <.live_component
+      module={GhostGroupWeb.MedicalRecommendationLive.FormComponent}
+      id={@medical_recommendation.id}
+      title={@page_title}
+      action={@live_action}
+      medical_recommendation={@medical_recommendation}
+      return_to={Routes.medical_recommendation_show_path(@socket, :show, @medical_recommendation)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Number:</strong>
+    <%= @medical_recommendation.number %>
+  </li>
+
+  <li>
+    <strong>Issuer:</strong>
+    <%= @medical_recommendation.issuer %>
+  </li>
+
+  <li>
+    <strong>State:</strong>
+    <%= @medical_recommendation.state %>
+  </li>
+
+  <li>
+    <strong>Expiration:</strong>
+    <%= @medical_recommendation.expiration %>
+  </li>
+
+  <li>
+    <strong>Image:</strong>
+    <%= @medical_recommendation.image %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.medical_recommendation_show_path(@socket, :edit, @medical_recommendation), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.medical_recommendation_index_path(@socket, :index) %></span>
