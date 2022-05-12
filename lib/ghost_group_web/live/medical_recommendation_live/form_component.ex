@@ -4,7 +4,10 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
   alias GhostGroup.MedicalRecommendations
 
   def mount(_params, _session, %{assigns: %{current_user: current_user}} = socket) do
-    {:ok, assign(socket, current_user: current_user)}
+    {:ok,
+     socket
+     |> assign(current_user: current_user)
+     |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
   end
 
   @impl true
@@ -14,7 +17,8 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)}
+     |> assign(:changeset, changeset)
+     |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
   end
 
   @impl true
@@ -36,18 +40,43 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
   end
 
   defp save_medical_recommendation(socket, :edit, medical_recommendation_params) do
-    case MedicalRecommendations.update_medical_recommendation(
-           socket.assigns.medical_recommendation,
-           medical_recommendation_params
-         ) do
-      {:ok, _medical_recommendation} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Medical recommendation updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+    case consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
+           dest =
+             Path.join([:code.priv_dir(:ghost_group), "static", "uploads", Path.basename(path)])
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+           File.cp!(path, dest)
+           {:ok, Routes.static_path(socket, "/uploads/#{Path.basename(dest)}")}
+         end) do
+      [file_path] ->
+        case MedicalRecommendations.update_medical_recommendation(
+               socket.assigns.medical_recommendation,
+               medical_recommendation_params
+               |> Map.put("image", file_path)
+             ) do
+          {:ok, _medical_recommendation} ->
+            {:noreply,
+             socket
+             |> put_flash(:info, "Medical recommendation updated successfully")
+             |> push_redirect(to: socket.assigns.return_to)}
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:noreply, assign(socket, :changeset, changeset)}
+        end
+
+      _ ->
+        case MedicalRecommendations.update_medical_recommendation(
+               socket.assigns.medical_recommendation,
+               medical_recommendation_params
+             ) do
+          {:ok, _medical_recommendation} ->
+            {:noreply,
+             socket
+             |> put_flash(:info, "Medical recommendation updated successfully")
+             |> push_redirect(to: socket.assigns.return_to)}
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:noreply, assign(socket, :changeset, changeset)}
+        end
     end
   end
 
@@ -56,9 +85,16 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
          :new,
          medical_recommendation_params
        ) do
+    [file_path] =
+      consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
+        dest = Path.join("priv/static/uploads", Path.basename(path))
+        File.cp!(path, dest)
+        {:ok, Routes.static_path(socket, "/uploads/#{Path.basename(dest)}")}
+      end)
 
     case medical_recommendation_params
-         |> Map.merge(%{"user_id" => current_user_id})
+         |> Map.put("user_id", current_user_id)
+         |> Map.put("image", file_path)
          |> MedicalRecommendations.create_medical_recommendation() do
       {:ok, _medical_recommendation} ->
         {:noreply,
@@ -70,4 +106,7 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 end

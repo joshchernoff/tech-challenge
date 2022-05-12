@@ -81,6 +81,11 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.Index do
      )}
   end
 
+  @impl true
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :image, ref)}
+  end
+
   defp list_medical_recommendations(current_user_id: current_user_id) do
     MedicalRecommendations.list_medical_recommendations(current_user_id: current_user_id)
   end

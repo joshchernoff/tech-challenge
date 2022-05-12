@@ -6,21 +6,18 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
 
   @create_attrs %{
     expiration: %{day: 11, month: 5, year: 2022},
-    image: "some image",
     issuer: "some issuer",
     number: "some number",
     state: "some state"
   }
   @update_attrs %{
     expiration: %{day: 12, month: 5, year: 2022},
-    image: "some updated image",
     issuer: "some updated issuer",
     number: "some updated number",
     state: "some updated state"
   }
   @invalid_attrs %{
     expiration: %{day: 30, month: 2, year: 2022},
-    image: nil,
     issuer: nil,
     number: nil,
     state: nil
@@ -60,6 +57,21 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
              |> form("#medical_recommendation-form", medical_recommendation: @invalid_attrs)
              |> render_change() =~ "is invalid"
 
+      %{size: size} = File.stat!("priv/static/images/phoenix.png")
+
+      image =
+        file_input(index_live, "#medical_recommendation-form", :image, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "phoenix.png",
+            content: File.read!("priv/static/images/phoenix.png"),
+            size: size,
+            type: "image/png"
+          }
+        ])
+
+      assert render_upload(image, "phoenix.png") =~ "100%"
+
       {:ok, _, html} =
         index_live
         |> form("#medical_recommendation-form", medical_recommendation: @create_attrs)
@@ -98,7 +110,6 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
         |> follow_redirect(conn, Routes.medical_recommendation_index_path(conn, :index))
 
       assert html =~ "Medical recommendation updated successfully"
-      assert html =~ "some updated image"
     end
 
     test "deletes medical_recommendation in listing", %{
@@ -149,6 +160,21 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
              |> form("#medical_recommendation-form", medical_recommendation: @invalid_attrs)
              |> render_change() =~ "is invalid"
 
+      %{size: size} = File.stat!("priv/static/images/phoenix.png")
+
+      image =
+        file_input(show_live, "#medical_recommendation-form", :image, [
+          %{
+            last_modified: 1_594_171_879_000,
+            name: "phoenix.png",
+            content: File.read!("priv/static/images/phoenix.png"),
+            size: size,
+            type: "image/png"
+          }
+        ])
+
+      assert render_upload(image, "phoenix.png") =~ "100%"
+
       {:ok, _, html} =
         show_live
         |> form("#medical_recommendation-form", medical_recommendation: @update_attrs)
@@ -159,7 +185,6 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
         )
 
       assert html =~ "Medical recommendation updated successfully"
-      assert html =~ "some updated image"
     end
   end
 end
