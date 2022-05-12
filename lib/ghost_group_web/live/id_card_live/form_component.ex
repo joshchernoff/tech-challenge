@@ -10,7 +10,8 @@ defmodule GhostGroupWeb.IdCardLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)}
+     |> assign(:changeset, changeset)
+     |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
   end
 
   @impl true
@@ -28,20 +29,62 @@ defmodule GhostGroupWeb.IdCardLive.FormComponent do
   end
 
   defp save_id_card(socket, :edit, id_card_params) do
-    case IdCards.update_id_card(socket.assigns.id_card, id_card_params) do
-      {:ok, _id_card} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Id card updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+    case consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
+           dest =
+             Path.join([:code.priv_dir(:ghost_group), "static", "uploads", Path.basename(path)])
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+           File.cp!(path, dest)
+           {:ok, Routes.static_path(socket, "/uploads/#{Path.basename(dest)}")}
+         end) do
+      [file_path] ->
+        case IdCards.update_id_card(
+               socket.assigns.id_card,
+               id_card_params
+               |> Map.put("image", file_path)
+             ) do
+          {:ok, _id_card} ->
+            {:noreply,
+             socket
+             |> put_flash(:info, "Id card updated successfully")
+             |> push_redirect(to: socket.assigns.return_to)}
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:noreply, assign(socket, :changeset, changeset)}
+        end
+
+      _ ->
+        case IdCards.update_id_card(
+               socket.assigns.id_card,
+               id_card_params
+             ) do
+          {:ok, _id_card} ->
+            {:noreply,
+             socket
+             |> put_flash(:info, "Id card updated successfully")
+             |> push_redirect(to: socket.assigns.return_to)}
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:noreply, assign(socket, :changeset, changeset)}
+        end
     end
   end
 
-  defp save_id_card(socket, :new, id_card_params) do
-    case IdCards.create_id_card(id_card_params) do
+  defp save_id_card(
+         %{assigns: %{current_user_id: current_user_id}} = socket,
+         :new,
+         id_card_params
+       ) do
+    [file_path] =
+      consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
+        dest = Path.join("priv/static/uploads", Path.basename(path))
+        File.cp!(path, dest)
+        {:ok, Routes.static_path(socket, "/uploads/#{Path.basename(dest)}")}
+      end)
+
+    case id_card_params
+         |> Map.put("user_id", current_user_id)
+         |> Map.put("image", file_path)
+         |> IdCards.create_id_card() do
       {:ok, _id_card} ->
         {:noreply,
          socket
@@ -52,4 +95,8 @@ defmodule GhostGroupWeb.IdCardLive.FormComponent do
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 end

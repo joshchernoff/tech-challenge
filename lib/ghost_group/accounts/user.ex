@@ -11,6 +11,7 @@ defmodule GhostGroup.Accounts.User do
     field :dob, :date, redact: true
 
     has_many :medical_recommendations, GhostGroup.MedicalRecommendations.MedicalRecommendation
+    has_many :id_cards, GhostGroup.IdCards.IdCard
 
     timestamps()
   end

@@ -10,13 +10,15 @@ defmodule GhostGroup.IdCards.IdCard do
     field :number, :string
     field :state, :string
 
+    belongs_to :user, GhostGroup.Accounts.User, type: :binary_id
+
     timestamps()
   end
 
   @doc false
   def changeset(id_card, attrs) do
     id_card
-    |> cast(attrs, [:number, :state, :expiration, :image])
-    |> validate_required([:number, :state, :expiration, :image])
+    |> cast(attrs, [:number, :state, :expiration, :image, :user_id])
+    |> validate_required([:number, :state, :expiration, :image, :user_id])
   end
 end

@@ -9,33 +9,36 @@ defmodule GhostGroup.IdCards do
   alias GhostGroup.IdCards.IdCard
 
   @doc """
-  Returns the list of id_cards.
+  Returns the list of id_cards for a given user id
 
   ## Examples
 
-      iex> list_id_cards()
+      iex> list_id_cards(current_user_id: current_user_id)
       [%IdCard{}, ...]
 
   """
-  def list_id_cards do
-    Repo.all(IdCard)
+  def list_id_cards(current_user_id: current_user_id) do
+    from(ic in IdCard, where: ic.user_id == ^current_user_id) |> Repo.all()
   end
 
   @doc """
-  Gets a single id_card.
+  Gets a single id_card for a given user id
 
   Raises `Ecto.NoResultsError` if the Id card does not exist.
 
   ## Examples
 
-      iex> get_id_card!(123)
+      iex> get_id_card!(123, current_user_id)
       %IdCard{}
 
-      iex> get_id_card!(456)
+      iex> get_id_card!(456, current_user_id)
       ** (Ecto.NoResultsError)
 
   """
-  def get_id_card!(id), do: Repo.get!(IdCard, id)
+  def get_id_card!(id, current_user_id) do
+    from(ic in IdCard, where: ic.user_id == ^current_user_id and ic.id == ^id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a id_card.

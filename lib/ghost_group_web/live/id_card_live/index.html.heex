@@ -3,6 +3,7 @@
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.id_card_index_path(@socket, :index)}>
     <.live_component
+      current_user_id={@current_user_id}
       module={GhostGroupWeb.IdCardLive.FormComponent}
       id={@id_card.id || :new}
       title={@page_title}
