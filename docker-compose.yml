@@ -9,8 +9,13 @@ services:
       DATABASE_URL: "ecto://postgres:postgres@db/ghost_group_dev"
       SECRET_KEY_BASE: DCgs1h58PVTj2uyIW867pNV1Y5VZfxS26quAUCm02nkH9K204GyQyo4EvT3qH9c4
       MIX_ENV: prod
-      PHX_SERVER: "true"
       RELEASE_NAME: prod
+      EXT_PORT: 4001
+      INT_PORT: 4001
+      PHX_SCHEME: https
+      PHX_HOST: localtest.me
+      PHX_SERVER: "true"
+
     depends_on:
       - db
     ports:

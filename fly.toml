@@ -1,6 +1,6 @@
-# fly.toml file generated for ghost-group-web on 2021-12-15T22:45:21-08:00
+# fly.toml file generated for bold-frost-2447 on 2022-05-12T14:16:12-07:00
 
-app = "ghost-group"
+app = "bold-frost-2447"
 
 kill_signal = "SIGTERM"
 kill_timeout = 5
@@ -10,12 +10,12 @@ processes = []
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "ghost-group.fly.dev"
-  PHX_SCHEME = "https"
-  INT_PORT = "8080"
-  EXT_PORT = "443"
   ECTO_IPV6 = "true"
   ERL_AFLAGS = "-proto_dist inet6_tcp"
+  EXT_PORT = "443"
+  INT_PORT = "8080"
+  PHX_HOST = "bold-frost-2447.fly.dev/"
+  PHX_SCHEME = "https"
 
 [experimental]
   allowed_public_ports = []
