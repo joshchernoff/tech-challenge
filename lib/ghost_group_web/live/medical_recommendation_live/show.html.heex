@@ -3,6 +3,7 @@
 <%= if @live_action in [:edit] do %>
   <.modal return_to={Routes.medical_recommendation_show_path(@socket, :show, @medical_recommendation)}>
     <.live_component
+      current_user_id={@current_user_id}
       module={GhostGroupWeb.MedicalRecommendationLive.FormComponent}
       id={@medical_recommendation.id}
       title={@page_title}

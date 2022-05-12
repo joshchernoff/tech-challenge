@@ -17,8 +17,8 @@ defmodule GhostGroup.MedicalRecommendations do
       [%MedicalRecommendation{}, ...]
 
   """
-  def list_medical_recommendations do
-    Repo.all(MedicalRecommendation)
+  def list_medical_recommendations(current_user_id: current_user_id) do
+    from(mr in MedicalRecommendation, where: mr.user_id == ^current_user_id) |> Repo.all()
   end
 
   @doc """
@@ -35,7 +35,10 @@ defmodule GhostGroup.MedicalRecommendations do
       ** (Ecto.NoResultsError)
 
   """
-  def get_medical_recommendation!(id), do: Repo.get!(MedicalRecommendation, id)
+  def get_medical_recommendation!(id, current_user_id) do
+      from(mr in MedicalRecommendation, where: mr.user_id == ^current_user_id and mr.id == ^id)
+      |> Repo.one!()
+  end
 
   @doc """
   Creates a medical_recommendation.
@@ -98,7 +101,10 @@ defmodule GhostGroup.MedicalRecommendations do
       %Ecto.Changeset{data: %MedicalRecommendation{}}
 
   """
-  def change_medical_recommendation(%MedicalRecommendation{} = medical_recommendation, attrs \\ %{}) do
+  def change_medical_recommendation(
+        %MedicalRecommendation{} = medical_recommendation,
+        attrs \\ %{}
+      ) do
     MedicalRecommendation.changeset(medical_recommendation, attrs)
   end
 end

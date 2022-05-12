@@ -8,6 +8,8 @@ defmodule GhostGroupWeb.IdCardLiveTest do
   @update_attrs %{expiration: %{day: 12, month: 5, year: 2022}, image: "some updated image", number: "some updated number", state: "some updated state"}
   @invalid_attrs %{expiration: %{day: 30, month: 2, year: 2022}, image: nil, number: nil, state: nil}
 
+  setup :register_and_log_in_user
+
   defp create_id_card(_) do
     id_card = id_card_fixture()
     %{id_card: id_card}

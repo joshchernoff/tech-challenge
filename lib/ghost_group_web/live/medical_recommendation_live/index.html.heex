@@ -1,14 +1,14 @@
 <h1>Listing Medical recommendations</h1>
-
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.medical_recommendation_index_path(@socket, :index)}>
     <.live_component
+      current_user_id={@current_user_id}
       module={GhostGroupWeb.MedicalRecommendationLive.FormComponent}
       id={@medical_recommendation.id || :new}
       title={@page_title}
       action={@live_action}
       medical_recommendation={@medical_recommendation}
-      return_to={Routes.medical_recommendation_index_path(@socket, :index)}
+      return_to={Routes.medical_recommendation_index_path(@socket, :index)},
     />
   </.modal>
 <% end %>

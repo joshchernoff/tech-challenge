@@ -3,6 +3,10 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
 
   alias GhostGroup.MedicalRecommendations
 
+  def mount(_params, _session, %{assigns: %{current_user: current_user}} = socket) do
+    {:ok, assign(socket, current_user: current_user)}
+  end
+
   @impl true
   def update(%{medical_recommendation: medical_recommendation} = assigns, socket) do
     changeset = MedicalRecommendations.change_medical_recommendation(medical_recommendation)
@@ -14,7 +18,11 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"medical_recommendation" => medical_recommendation_params}, socket) do
+  def handle_event(
+        "validate",
+        %{"medical_recommendation" => medical_recommendation_params},
+        socket
+      ) do
     changeset =
       socket.assigns.medical_recommendation
       |> MedicalRecommendations.change_medical_recommendation(medical_recommendation_params)
@@ -28,7 +36,10 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
   end
 
   defp save_medical_recommendation(socket, :edit, medical_recommendation_params) do
-    case MedicalRecommendations.update_medical_recommendation(socket.assigns.medical_recommendation, medical_recommendation_params) do
+    case MedicalRecommendations.update_medical_recommendation(
+           socket.assigns.medical_recommendation,
+           medical_recommendation_params
+         ) do
       {:ok, _medical_recommendation} ->
         {:noreply,
          socket
@@ -40,8 +51,15 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
     end
   end
 
-  defp save_medical_recommendation(socket, :new, medical_recommendation_params) do
-    case MedicalRecommendations.create_medical_recommendation(medical_recommendation_params) do
+  defp save_medical_recommendation(
+         %{assigns: %{current_user_id: current_user_id}} = socket,
+         :new,
+         medical_recommendation_params
+       ) do
+
+    case medical_recommendation_params
+         |> Map.merge(%{"user_id" => current_user_id})
+         |> MedicalRecommendations.create_medical_recommendation() do
       {:ok, _medical_recommendation} ->
         {:noreply,
          socket

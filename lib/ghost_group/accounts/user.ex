@@ -9,6 +9,9 @@ defmodule GhostGroup.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :dob, :date, redact: true
+
+    has_many :medical_recommendations, GhostGroup.MedicalRecommendations.MedicalRecommendation
+
     timestamps()
   end
 

@@ -72,25 +72,27 @@ defmodule GhostGroupWeb.Router do
     put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
-  scope "/", GhostGroupWeb do
-    pipe_through [:browser, :require_authenticated_user]
+  live_session :authed,
+    on_mount: GhostGroupWeb.UserAuthLive do
+    scope "/", GhostGroupWeb do
+      pipe_through [:browser, :require_authenticated_user]
 
-    get "/users/settings", UserSettingsController, :edit
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+      get "/users/settings", UserSettingsController, :edit
+      put "/users/settings", UserSettingsController, :update
+      get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
+      live "/medical_recommendations", MedicalRecommendationLive.Index, :index
+      live "/medical_recommendations/new", MedicalRecommendationLive.Index, :new
+      live "/medical_recommendations/:id/edit", MedicalRecommendationLive.Index, :edit
+      live "/medical_recommendations/:id", MedicalRecommendationLive.Show, :show
+      live "/medical_recommendations/:id/show/edit", MedicalRecommendationLive.Show, :edit
 
-    live "/medical_recommendations", MedicalRecommendationLive.Index, :index
-    live "/medical_recommendations/new", MedicalRecommendationLive.Index, :new
-    live "/medical_recommendations/:id/edit", MedicalRecommendationLive.Index, :edit
-    live "/medical_recommendations/:id", MedicalRecommendationLive.Show, :show
-    live "/medical_recommendations/:id/show/edit", MedicalRecommendationLive.Show, :edit
-
-    live "/id_cards", IdCardLive.Index, :index
-    live "/id_cards/new", IdCardLive.Index, :new
-    live "/id_cards/:id/edit", IdCardLive.Index, :edit
-    live "/id_cards/:id", IdCardLive.Show, :show
-    live "/id_cards/:id/show/edit", IdCardLive.Show, :edit
+      live "/id_cards", IdCardLive.Index, :index
+      live "/id_cards/new", IdCardLive.Index, :new
+      live "/id_cards/:id/edit", IdCardLive.Index, :edit
+      live "/id_cards/:id", IdCardLive.Show, :show
+      live "/id_cards/:id/show/edit", IdCardLive.Show, :edit
+    end
   end
 
   scope "/", GhostGroupWeb do

@@ -55,4 +55,17 @@ defmodule GhostGroup.DataCase do
       end)
     end)
   end
+
+  @doc """
+  Setup helper that registers and logs in users.
+
+      setup :register_user
+
+  It stores an updated connection and a registered user in the
+  test context.
+  """
+  def register_user(_) do
+    user = GhostGroup.AccountsFixtures.user_fixture()
+    %{user: user}
+  end
 end

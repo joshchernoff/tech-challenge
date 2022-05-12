@@ -11,13 +11,15 @@ defmodule GhostGroup.MedicalRecommendations.MedicalRecommendation do
     field :number, :string
     field :state, :string
 
+    belongs_to :user, GhostGroup.Accounts.User, type: :binary_id
+
     timestamps()
   end
 
   @doc false
   def changeset(medical_recommendation, attrs) do
     medical_recommendation
-    |> cast(attrs, [:number, :issuer, :state, :expiration, :image])
-    |> validate_required([:number, :issuer, :state, :expiration, :image])
+    |> cast(attrs, [:number, :issuer, :state, :expiration, :image, :user_id])
+    |> validate_required([:number, :issuer, :state, :expiration, :image, :user_id])
   end
 end
