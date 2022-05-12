@@ -1,0 +1,45 @@
+<h1>Listing Id cards</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.id_card_index_path(@socket, :index)}>
+    <.live_component
+      module={GhostGroupWeb.IdCardLive.FormComponent}
+      id={@id_card.id || :new}
+      title={@page_title}
+      action={@live_action}
+      id_card={@id_card}
+      return_to={Routes.id_card_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>State</th>
+      <th>Expiration</th>
+      <th>Image</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="id_cards">
+    <%= for id_card <- @id_cards do %>
+      <tr id={"id_card-#{id_card.id}"}>
+        <td><%= id_card.number %></td>
+        <td><%= id_card.state %></td>
+        <td><%= id_card.expiration %></td>
+        <td><%= id_card.image %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.id_card_show_path(@socket, :show, id_card) %></span>
+          <span><%= live_patch "Edit", to: Routes.id_card_index_path(@socket, :edit, id_card) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: id_card.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Id card", to: Routes.id_card_index_path(@socket, :new) %></span>

@@ -85,6 +85,12 @@ defmodule GhostGroupWeb.Router do
     live "/medical_recommendations/:id/edit", MedicalRecommendationLive.Index, :edit
     live "/medical_recommendations/:id", MedicalRecommendationLive.Show, :show
     live "/medical_recommendations/:id/show/edit", MedicalRecommendationLive.Show, :edit
+
+    live "/id_cards", IdCardLive.Index, :index
+    live "/id_cards/new", IdCardLive.Index, :new
+    live "/id_cards/:id/edit", IdCardLive.Index, :edit
+    live "/id_cards/:id", IdCardLive.Show, :show
+    live "/id_cards/:id/show/edit", IdCardLive.Show, :edit
   end
 
   scope "/", GhostGroupWeb do

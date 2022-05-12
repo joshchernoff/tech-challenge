@@ -1,0 +1,41 @@
+<h1>Show Id card</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.id_card_show_path(@socket, :show, @id_card)}>
+    <.live_component
+      module={GhostGroupWeb.IdCardLive.FormComponent}
+      id={@id_card.id}
+      title={@page_title}
+      action={@live_action}
+      id_card={@id_card}
+      return_to={Routes.id_card_show_path(@socket, :show, @id_card)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Number:</strong>
+    <%= @id_card.number %>
+  </li>
+
+  <li>
+    <strong>State:</strong>
+    <%= @id_card.state %>
+  </li>
+
+  <li>
+    <strong>Expiration:</strong>
+    <%= @id_card.expiration %>
+  </li>
+
+  <li>
+    <strong>Image:</strong>
+    <%= @id_card.image %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.id_card_show_path(@socket, :edit, @id_card), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.id_card_index_path(@socket, :index) %></span>
