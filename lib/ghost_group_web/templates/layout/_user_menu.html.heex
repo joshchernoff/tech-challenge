@@ -1,6 +1,7 @@
-<ul>
+<ul id="user_nav">
 <%= if @current_user do %>
   <li><%= link "Medical Recommendations", to: Routes.medical_recommendation_index_path(@conn, :index) %></li>
+  <li><%= link "ID Cards", to: Routes.id_card_index_path(@conn, :index) %></li>
 
   <li><%= @current_user.email %></li>
   <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
