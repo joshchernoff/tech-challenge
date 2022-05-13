@@ -1,4 +1,4 @@
-<h1>Show Medical recommendation</h1>
+<h1>Show Medical recommendation <%= if expired?(@medical_recommendation.expiration) do %><span class='alert-danger'>Expired!</span><% end %></h1>
 
 <%= if @live_action in [:edit] do %>
   <.modal return_to={Routes.medical_recommendation_show_path(@socket, :show, @medical_recommendation)}>

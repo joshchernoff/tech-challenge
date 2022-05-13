@@ -34,10 +34,13 @@ defmodule GhostGroupWeb.IdCardLiveTest do
       conn: conn,
       id_card: id_card
     } do
-      {:ok, _index_live, html} = live(conn, Routes.id_card_index_path(conn, :index))
+      id_card2 =
+        id_card_fixture(%{user_id: id_card.user_id, expiration: %{day: 18, month: 2, year: 2021}})
 
+      {:ok, _index_live, html} = live(conn, Routes.id_card_index_path(conn, :index))
       assert html =~ "Listing Id cards"
       assert html =~ id_card.image
+      assert html =~ "Expired! #{id_card2.expiration}"
     end
 
     test "saves new id_card", %{conn: conn} do
@@ -122,6 +125,18 @@ defmodule GhostGroupWeb.IdCardLiveTest do
 
   describe "Show" do
     setup [:create_id_card]
+
+    test "displays epired", %{
+      conn: conn,
+      id_card: id_card
+    } do
+      id_card2 =
+        id_card_fixture(%{user_id: id_card.user_id, expiration: %{day: 18, month: 2, year: 2021}})
+
+      {:ok, _show_live, html} = live(conn, Routes.id_card_show_path(conn, :show, id_card2))
+      assert html =~ "Expired!"
+
+    end
 
     test "displays id_card", %{
       conn: conn,

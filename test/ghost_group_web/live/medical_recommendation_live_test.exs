@@ -37,11 +37,14 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
       conn: conn,
       medical_recommendation: medical_recommendation
     } do
+
+      medical_recommendation_fixture(%{user_id: medical_recommendation.user_id, expiration: %{day: 20, month: 2, year: 2021}})
       {:ok, _index_live, html} =
         live(conn, Routes.medical_recommendation_index_path(conn, :index))
 
       assert html =~ "Listing Medical recommendations"
       assert html =~ medical_recommendation.image
+      assert html =~ "Expired! #{medical_recommendation.expiration}"
     end
 
     test "saves new medical_recommendation", %{conn: conn} do
@@ -129,6 +132,18 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
 
   describe "Show" do
     setup [:create_medical_recommendation]
+
+    test "displays expired", %{
+      conn: conn,
+      medical_recommendation: medical_recommendation
+    } do
+      mr2 = medical_recommendation_fixture(%{user_id: medical_recommendation.user_id, expiration: %{day: 20, month: 2, year: 2021}})
+
+      {:ok, _show_live, html} =
+        live(conn, Routes.medical_recommendation_show_path(conn, :show, mr2))
+
+      assert html =~ "Expired!"
+    end
 
     test "displays medical_recommendation", %{
       conn: conn,

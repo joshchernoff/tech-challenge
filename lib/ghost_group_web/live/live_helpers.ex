@@ -57,4 +57,12 @@ defmodule GhostGroupWeb.LiveHelpers do
     |> JS.hide(to: "#modal", transition: "fade-out")
     |> JS.hide(to: "#modal-content", transition: "fade-out-scale")
   end
+
+  def expired?(target_date) do
+    case Date.compare(Date.utc_today(), target_date) do
+      :gt -> true
+      _ -> false
+    end
+  end
+
 end

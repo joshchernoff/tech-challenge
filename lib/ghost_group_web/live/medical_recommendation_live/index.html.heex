@@ -31,8 +31,8 @@
         <td><%= medical_recommendation.number %></td>
         <td><%= medical_recommendation.issuer %></td>
         <td><%= medical_recommendation.state %></td>
-        <td><%= medical_recommendation.expiration %></td>
-        <td><%= medical_recommendation.image %></td>
+        <td><%= if expired?(medical_recommendation.expiration) do %><span class='alert-danger'>Expired! <%= medical_recommendation.expiration %></span><% end %></td>
+        <td><img style="width: 200px;" src={medical_recommendation.image} /></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.medical_recommendation_show_path(@socket, :show, medical_recommendation) %></span>

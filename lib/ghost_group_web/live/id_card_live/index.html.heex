@@ -30,8 +30,8 @@
       <tr id={"id_card-#{id_card.id}"}>
         <td><%= id_card.number %></td>
         <td><%= id_card.state %></td>
-        <td><%= id_card.expiration %></td>
-        <td><%= id_card.image %></td>
+        <td><%= if expired?(id_card.expiration) do %><span class='alert-danger'>Expired! <%= id_card.expiration %></span><% end %></td>
+        <td><img style="width: 200px;" src={id_card.image} /></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.id_card_show_path(@socket, :show, id_card) %></span>
