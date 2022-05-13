@@ -64,5 +64,4 @@ defmodule GhostGroupWeb.LiveHelpers do
       _ -> false
     end
   end
-
 end

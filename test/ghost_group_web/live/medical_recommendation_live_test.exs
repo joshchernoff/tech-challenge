@@ -37,8 +37,11 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
       conn: conn,
       medical_recommendation: medical_recommendation
     } do
+      medical_recommendation_fixture(%{
+        user_id: medical_recommendation.user_id,
+        expiration: %{day: 20, month: 2, year: 2021}
+      })
 
-      medical_recommendation_fixture(%{user_id: medical_recommendation.user_id, expiration: %{day: 20, month: 2, year: 2021}})
       {:ok, _index_live, html} =
         live(conn, Routes.medical_recommendation_index_path(conn, :index))
 
@@ -137,7 +140,11 @@ defmodule GhostGroupWeb.MedicalRecommendationLiveTest do
       conn: conn,
       medical_recommendation: medical_recommendation
     } do
-      mr2 = medical_recommendation_fixture(%{user_id: medical_recommendation.user_id, expiration: %{day: 20, month: 2, year: 2021}})
+      mr2 =
+        medical_recommendation_fixture(%{
+          user_id: medical_recommendation.user_id,
+          expiration: %{day: 20, month: 2, year: 2021}
+        })
 
       {:ok, _show_live, html} =
         live(conn, Routes.medical_recommendation_show_path(conn, :show, mr2))

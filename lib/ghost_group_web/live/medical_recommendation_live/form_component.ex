@@ -41,7 +41,8 @@ defmodule GhostGroupWeb.MedicalRecommendationLive.FormComponent do
 
   defp save_medical_recommendation(socket, :edit, medical_recommendation_params) do
     case consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
-        dest = Path.join([:code.priv_dir(:ghost_group), "static", "images", Path.basename(path)])
+           dest =
+             Path.join([:code.priv_dir(:ghost_group), "static", "images", Path.basename(path)])
 
            File.cp!(path, dest)
            {:ok, Routes.static_path(socket, "/images/#{Path.basename(dest)}")}

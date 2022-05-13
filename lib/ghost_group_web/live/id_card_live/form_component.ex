@@ -30,7 +30,8 @@ defmodule GhostGroupWeb.IdCardLive.FormComponent do
 
   defp save_id_card(socket, :edit, id_card_params) do
     case consume_uploaded_entries(socket, :image, fn %{path: path}, _entry ->
-        dest = Path.join([:code.priv_dir(:ghost_group), "static", "images", Path.basename(path)])
+           dest =
+             Path.join([:code.priv_dir(:ghost_group), "static", "images", Path.basename(path)])
 
            File.cp!(path, dest)
            {:ok, Routes.static_path(socket, "/images/#{Path.basename(dest)}")}

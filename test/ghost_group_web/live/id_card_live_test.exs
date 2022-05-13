@@ -135,7 +135,6 @@ defmodule GhostGroupWeb.IdCardLiveTest do
 
       {:ok, _show_live, html} = live(conn, Routes.id_card_show_path(conn, :show, id_card2))
       assert html =~ "Expired!"
-
     end
 
     test "displays id_card", %{
